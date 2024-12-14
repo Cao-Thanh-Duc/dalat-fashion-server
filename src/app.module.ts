@@ -10,6 +10,7 @@ import { CategoryProductModule } from './modules/category-product/category-produ
 import { RoleModule } from './modules/role/role.module';
 import { UserModule } from './modules/user/user.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
+import { ProductModule } from './modules/product/product.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,6 +25,7 @@ import { SupplierModule } from './modules/supplier/supplier.module';
     RoleModule,
     CategoryProductModule,
     SupplierModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [
