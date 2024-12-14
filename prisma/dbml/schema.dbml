@@ -1,0 +1,153 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Users {
+  UserID String [pk]
+  fullname String [not null]
+  gender Gender
+  birth_date DateTime
+  phone String
+  address String
+  email String [unique, not null]
+  password String [not null]
+  RoleID String
+  Role Roles
+  UserProducts UserProduct [not null]
+}
+
+Table ProductCategory {
+  id String [pk]
+  name String [not null]
+  Products Products [not null]
+}
+
+Table Supplier {
+  id String [pk]
+  name String [not null]
+  Products Products [not null]
+}
+
+Table Products {
+  id String [pk]
+  name String [not null]
+  quantity Int
+  price Float
+  sale_price Float [not null]
+  unit String [not null]
+  description String
+  CateID String
+  SuppID String
+  Category ProductCategory
+  Supplier Supplier
+  Details DetailOrder [not null]
+  image String
+  image_2 String
+  image_3 String
+  image_4 String
+  image_5 String
+  UserProducts UserProduct [not null]
+  Orders Orders [not null]
+  size ProductSizes [not null]
+}
+
+Table ProductSizes {
+  id String [pk]
+  size SizeEnum [not null]
+  product Products [not null]
+  productId String [not null]
+}
+
+Table Roles {
+  RoleID String [pk]
+  RoleName String [unique, not null]
+  Users Users [not null]
+}
+
+Table Promotions {
+  PromotionID String [pk]
+  Condition String
+  Value Float
+  StartDate DateTime
+  EndDate DateTime
+  Details DetailOrder [not null]
+}
+
+Table Orders {
+  OrderID String [pk]
+  buy_date DateTime [not null]
+  total Float [not null]
+  status OrderStatus [not null]
+  ProductID String
+  product Products
+  price Float [not null]
+  Details DetailOrder [not null]
+}
+
+Table DetailOrder {
+  DetailID String [pk]
+  OrderID String
+  ProductID String
+  product_name String [not null]
+  quantity Int [not null]
+  price Float [not null]
+  PromotionID String
+  Discount Float [not null]
+  total Float [not null]
+  Order Orders
+  Product Products
+  Promotion Promotions
+}
+
+Table UserProduct {
+  id String [pk]
+  UserID String [not null]
+  ProductID String [not null]
+  User Users [not null]
+  Product Products [not null]
+
+  indexes {
+    (UserID, ProductID) [unique]
+  }
+}
+
+Enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+Enum SizeEnum {
+  S
+  XS
+  M
+  L
+  XL
+}
+
+Enum OrderStatus {
+  Pending
+  Processing
+  Completed
+  Cancelled
+}
+
+Ref: Users.RoleID > Roles.RoleID
+
+Ref: Products.CateID > ProductCategory.id
+
+Ref: Products.SuppID > Supplier.id
+
+Ref: ProductSizes.productId > Products.id
+
+Ref: Orders.ProductID > Products.id
+
+Ref: DetailOrder.OrderID > Orders.OrderID
+
+Ref: DetailOrder.ProductID > Products.id
+
+Ref: DetailOrder.PromotionID > Promotions.PromotionID
+
+Ref: UserProduct.UserID > Users.UserID
+
+Ref: UserProduct.ProductID > Products.id

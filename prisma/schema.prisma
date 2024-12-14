@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  UserID       String        @id @default(cuid())
+  fullname     String
+  gender       Gender?
+  birth_date   DateTime?
+  phone        String?
+  address      String?
+  email        String        @unique
+  password     String
+  RoleID       String?
+  Role         Roles?        @relation(fields: [RoleID], references: [RoleID])
+  UserProducts UserProduct[]
+
+  @@map("Users")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+// Danh mục sản phẩm
+model ProductCategory {
+  id       String     @id @default(cuid())
+  name     String
+  Products Products[]
+
+  @@map("ProductCategory")
+}
+
+// Nhà cung cấp (hãng sản xuất ra)
+model Supplier {
+  id       String     @id @default(cuid())
+  name     String
+  Products Products[]
+
+  @@map("Supplier")
+}
+
+// Sản phẩm
+model Products {
+  id           String           @id @default(cuid())
+  name         String
+  quantity     Int?
+  price        Float?
+  sale_price   Float
+  unit         String
+  description  String?
+  CateID       String?
+  SuppID       String?
+  Category     ProductCategory? @relation(fields: [CateID], references: [id])
+  Supplier     Supplier?        @relation(fields: [SuppID], references: [id])
+  Details      DetailOrder[]
+  image        String?
+  image_2      String?
+  image_3      String?
+  image_4      String?
+  image_5      String?
+  UserProducts UserProduct[]
+  Orders       Orders[]
+  size         ProductSize[]
+
+  @@map("Products")
+}
+
+model ProductSize {
+  id        String   @id @default(cuid())
+  size      SizeEnum
+  product   Products @relation(fields: [productId], references: [id])
+  productId String
+
+  @@map("ProductSizes")
+}
+
+enum SizeEnum {
+  S
+  XS
+  M
+  L
+  XL
+}
+
+// Role user trong hệ thống
+model Roles {
+  RoleID   String  @id @default(cuid())
+  RoleName String  @unique
+  Users    Users[]
+
+  @@map("Roles")
+}
+
+// Khuyến mãi
+
+model Promotions {
+  PromotionID String        @id @default(cuid())
+  Condition   String?
+  Value       Float?
+  StartDate   DateTime?
+  EndDate     DateTime?
+  Details     DetailOrder[]
+
+  @@map("Promotions")
+}
+
+// Hóa đơn
+model Orders {
+  OrderID   String        @id @default(cuid())
+  buy_date  DateTime
+  total     Float
+  status    OrderStatus
+  ProductID String?
+  product   Products?     @relation(fields: [ProductID], references: [id])
+  price     Float
+  Details   DetailOrder[]
+
+  @@map("Orders")
+}
+
+enum OrderStatus {
+  Pending
+  Processing
+  Completed
+  Cancelled
+}
+
+// Chi tiết hóa đơn
+model DetailOrder {
+  DetailID     String      @id @default(cuid())
+  OrderID      String?
+  ProductID    String?
+  product_name String
+  quantity     Int
+  price        Float
+  PromotionID  String?
+  Discount     Float
+  total        Float
+  Order        Orders?     @relation(fields: [OrderID], references: [OrderID])
+  Product      Products?   @relation(fields: [ProductID], references: [id])
+  Promotion    Promotions? @relation(fields: [PromotionID], references: [PromotionID])
+
+  @@map("DetailOrder")
+}
+
+// bảng nhiều nhiều
+
+// Mối quan hệ nhiều nhiều giữa User và Product
+model UserProduct {
+  id        String   @id @default(cuid())
+  UserID    String
+  ProductID String
+  User      Users    @relation(fields: [UserID], references: [UserID])
+  Product   Products @relation(fields: [ProductID], references: [id])
+
+  @@unique([UserID, ProductID])
+  @@map("UserProduct")
+}
