@@ -15,8 +15,8 @@ export class CategoryProductService {
   async getAll(
     filter: CategoryProductDto,
   ): Promise<ProductCategoryPaginationResponseType> {
-    const items_per_page = filter.items_per_page || 10;
-    const page = filter.page || 1;
+    const items_per_page = Number(filter.items_per_page) || 10; // Chuyển đổi sang số nguyên
+    const page = Number(filter.page) || 1; // Chuyển đổi sang số nguyên
     const search = filter.search || '';
     const skip = page > 1 ? (page - 1) * items_per_page : 0;
 
@@ -29,7 +29,7 @@ export class CategoryProductService {
     const categories = await this.prismaService.productCategory.findMany({
       where,
       skip,
-      take: items_per_page,
+      take: items_per_page, // Đảm bảo `items_per_page` là số
       select: {
         id: true,
         name: true,

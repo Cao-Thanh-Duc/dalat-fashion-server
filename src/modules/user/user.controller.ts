@@ -58,7 +58,6 @@ export class UserController {
     return this.userService.getCountUser();
   }
 
-  @UseGuards(HandleAuthGuard)
   @Get()
   @ApiResponse({ status: 200, description: 'Successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
