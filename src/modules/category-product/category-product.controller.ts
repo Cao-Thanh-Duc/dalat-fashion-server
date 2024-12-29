@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -16,6 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ProductCategory } from '@prisma/client';
+import { HandleAuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { CategoryProductService } from 'src/modules/category-product/category-product.service';
 import {
   CategoryProductDto,
@@ -56,6 +58,7 @@ export class CategoryProductController {
     return this.categoryProductService.getDetail(id);
   }
 
+  @UseGuards(HandleAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Thêm danh mục sản phẩm' })
   @ApiResponse({ status: 201, description: 'Created' })
@@ -68,6 +71,7 @@ export class CategoryProductController {
     return this.categoryProductService.addCategoryProduct(data);
   }
 
+  @UseGuards(HandleAuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Cập nhật danh mục sản phẩm' })
   @ApiResponse({ status: 200, description: 'Successfully' })
@@ -82,6 +86,7 @@ export class CategoryProductController {
     return this.categoryProductService.updateCategoryProduct(id, data);
   }
 
+  @UseGuards(HandleAuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Xóa danh mục sản phẩm' })
   @ApiResponse({ status: 200, description: 'Successfully' })
